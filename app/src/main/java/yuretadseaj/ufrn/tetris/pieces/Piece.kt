@@ -1,17 +1,50 @@
 package yuretadseaj.ufrn.tetris.pieces
 
-import yuretadseaj.ufrn.tetris.Position
+import yuretadseaj.ufrn.tetris.Point
 
-interface Piece {
-    var positionA: Position
-    var positionB: Position
-    var positionC: Position
-    var positionD: Position
+open class Piece(
+        private var pointA: Point,
+        private var pointB: Point,
+        private var pointC: Point,
+        private var pointD: Point
+) {
+    fun moveUp(): Piece {
+        pointA.moveUp()
+        pointB.moveUp()
+        pointC.moveUp()
+        pointD.moveUp()
+        return this
+    }
 
-    fun moveUp()
-    fun moveRight()
-    fun moveLeft()
-    fun moveDown()
-    fun flip()
-    fun getPositions() = arrayOf(positionA, positionB, positionC, positionD)
+    fun moveRight(): Piece {
+        pointA.moveRight()
+        pointB.moveRight()
+        pointC.moveRight()
+        pointD.moveRight()
+        return this
+    }
+
+    fun moveLeft(): Piece {
+        pointA.moveLeft()
+        pointB.moveLeft()
+        pointC.moveLeft()
+        pointD.moveLeft()
+        return this
+    }
+
+    fun moveDown(): Piece {
+        pointA.moveDown()
+        pointB.moveDown()
+        pointC.moveDown()
+        pointD.moveDown()
+        return this
+    }
+
+    open fun flip() {
+        return
+    }
+
+    fun getPoints(): Array<Point> {
+        return arrayOf(Point(pointA), Point(pointB), Point(pointC), Point(pointD))
+    }
 }

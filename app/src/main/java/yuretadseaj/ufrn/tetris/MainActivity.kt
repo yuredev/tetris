@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     private val columnCount = 36
     private var isRuning = true
     private val speed = 300
-    private val initialPosition = Position(0, 0)
+    private val initialPosition = Point(0, 0)
     private lateinit var currentPiece: Piece
 
     private val board = Array(rowCount) {
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun renderPiece(piece: Piece) {
-        for (pos in piece.getPositions()) {
+        for (pos in piece.getPoints()) {
             try {
                 boardView[pos.row][pos.column]!!.setImageResource(R.drawable.white_point)
             } catch (e: ArrayIndexOutOfBoundsException) {
@@ -73,13 +73,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun run() {
+    private fun piecePositionIsValid(piece: Piece): Boolean {
+        for (point in piece.getPoints()) {
+            if (point.row == rowCount) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun run() {
         Thread {
             while (isRuning) {
                 Thread.sleep(speed.toLong())
                 runOnUiThread {
                     clearScreen()
-                    currentPiece.moveDown()
+                    val (pointA, pointB, pointC, pointD) = currentPiece.getPoints()
+                    val futurePiece = Piece(pointA, pointB, pointC, pointD).moveDown()
+                    if (piecePositionIsValid(futurePiece)) {
+                        currentPiece.moveDown()
+                    }
                     renderPiece(currentPiece)
                 }
             }
