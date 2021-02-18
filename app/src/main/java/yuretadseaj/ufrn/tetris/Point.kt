@@ -1,10 +1,7 @@
 package yuretadseaj.ufrn.tetris
 
 data class Point(var row: Int, var column: Int) {
-    constructor(point: Point) {
-        this.row = point.row
-        this.column = point.column
-    }
+    constructor(point: Point): this(point.row, point.column)
     fun moveDown(): Point {
         row++
         return this
