@@ -6,21 +6,25 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import yuretadseaj.ufrn.tetris.databinding.ActivityMainBinding
+import yuretadseaj.ufrn.tetris.pieces.Hero
 import yuretadseaj.ufrn.tetris.pieces.Piece
 import yuretadseaj.ufrn.tetris.pieces.SmashBoy
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var currentPiece: Piece
     private val rowCount = 22
     private val columnCount = 12
     private var isRuning = true
-    private val speed = 300
+    private val waitingTime = 300
     private val initialPosition = Point(1, 1)
-    private lateinit var currentPiece: Piece
+    private val stoppedPieces = mutableListOf<Piece>()
 
-    private val board = Array(rowCount) {
-        Array(columnCount) {}
+    private val validPositionsBoard = Array(rowCount) {
+        Array(columnCount) {
+            true
+        }
     }
 
     private val boardView = Array(rowCount) {
@@ -41,23 +45,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun defineBtnActions() {
         binding.btnRight.setOnClickListener {
-            val (pointA, pointB, pointC, pointD) = currentPiece.getPoints()
-            val futurePiece = Piece(pointA, pointB, pointC, pointD).moveRight()
-            if (piecePositionIsValid(futurePiece)) {
+            if (piecePositionIsValid(currentPiece.toRight())) {
                 currentPiece.moveRight()
             }
         }
         binding.btnLeft.setOnClickListener {
-            val (pointA, pointB, pointC, pointD) = currentPiece.getPoints()
-            val futurePiece = Piece(pointA, pointB, pointC, pointD).moveLeft()
-            if (piecePositionIsValid(futurePiece)) {
+            if (piecePositionIsValid(currentPiece.toLeft())) {
                 currentPiece.moveLeft()
             }
         }
         binding.btnDown.setOnClickListener {
-            val (pointA, pointB, pointC, pointD) = currentPiece.getPoints()
-            val futurePiece = Piece(pointA, pointB, pointC, pointD).moveDown()
-            if (piecePositionIsValid(futurePiece)) {
+            if (piecePositionIsValid(currentPiece.toDown())) {
                 currentPiece.moveDown()
             }
         }
@@ -78,6 +76,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getRandomPiece(): Piece {
+        when ((Math.random() * 2).toInt()) {
+            0 -> return SmashBoy(initialPosition)
+            1 -> return Hero(initialPosition)
+        }
         return SmashBoy(initialPosition)
     }
 
@@ -91,6 +93,7 @@ class MainActivity : AppCompatActivity() {
             for (j in 0 until columnCount) {
                 if (isBorder(Point(i, j))) {
                     boardView[i][j]!!.setImageResource(R.drawable.gray_point)
+                    validPositionsBoard[i][j] = false
                 } else {
                     boardView[i][j]!!.setImageResource(R.drawable.black_point)
                 }
@@ -108,9 +111,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun positionIsBusy(point: Point): Boolean {
+        return !validPositionsBoard[point.row][point.column]
+    }
+
     private fun piecePositionIsValid(piece: Piece): Boolean {
         for (point in piece.getPoints()) {
-            if (isBorder(point)) {
+            if (isBorder(point) || positionIsBusy(point)) {
                 return false
             }
         }
@@ -126,21 +133,30 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
+    private fun renderStoppedPieces() {
+        for (piece in stoppedPieces) {
+            for ((row, column) in piece.getPoints()) {
+                boardView[row][column]!!.setImageResource(R.drawable.white_point)
+            }
+        }
+    }
+
     private fun run() {
         Thread {
             while (isRuning) {
-                Thread.sleep(speed.toLong())
+                Thread.sleep(waitingTime.toLong())
                 runOnUiThread {
                     clearScreen()
+                    renderStoppedPieces()
                 }
-                val (pointA, pointB, pointC, pointD) = currentPiece.getPoints()
-                val futurePiece = Piece(pointA, pointB, pointC, pointD).moveDown()
-                if (piecePositionIsValid(futurePiece)) {
+                if (piecePositionIsValid(currentPiece.toDown())) {
                     currentPiece.moveDown()
                 } else {
-                    if (isInBoardBottom(currentPiece)) {
-                        currentPiece = getRandomPiece()
+                    stoppedPieces.add(currentPiece)
+                    currentPiece.getPoints().forEach {(row, column) ->
+                        validPositionsBoard[row][column] = false
                     }
+                    currentPiece = getRandomPiece()
                 }
                 runOnUiThread {
                     renderPiece(currentPiece)

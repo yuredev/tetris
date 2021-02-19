@@ -40,6 +40,27 @@ open class Piece(
         return this
     }
 
+    fun toLeft() = Piece(
+            Point(pointA),
+            Point(pointB),
+            Point(pointC),
+            Point(pointD)
+    ).moveLeft()
+
+    fun toDown() = Piece(
+            Point(pointA),
+            Point(pointB),
+            Point(pointC),
+            Point(pointD)
+    ).moveDown()
+
+    fun toRight() = Piece(
+            Point(pointA),
+            Point(pointB),
+            Point(pointC),
+            Point(pointD)
+    ).moveRight()
+
     open fun flip() {
         return
     }
