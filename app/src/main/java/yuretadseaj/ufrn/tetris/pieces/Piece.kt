@@ -3,19 +3,11 @@ package yuretadseaj.ufrn.tetris.pieces
 import yuretadseaj.ufrn.tetris.Point
 
 open class Piece(
-        private var pointA: Point,
-        private var pointB: Point,
-        private var pointC: Point,
-        private var pointD: Point
+        var pointA: Point,
+        var pointB: Point,
+        var pointC: Point,
+        var pointD: Point
 ) {
-    fun moveUp(): Piece {
-        pointA.moveUp()
-        pointB.moveUp()
-        pointC.moveUp()
-        pointD.moveUp()
-        return this
-    }
-
     fun moveRight(): Piece {
         pointA.moveRight()
         pointB.moveRight()
@@ -61,8 +53,12 @@ open class Piece(
             Point(pointD)
     ).moveRight()
 
-    open fun flip() {
-        return
+    open fun rotated(): Piece {
+        return this
+    }
+
+    open fun rotate(): Piece {
+        return this
     }
 
     fun getPoints(): Array<Point> {

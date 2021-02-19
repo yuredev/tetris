@@ -8,7 +8,7 @@
         android:gravity="clip_vertical"
         android:orientation="vertical"
         tools:context=".MainActivity"
-        android:background="@color/purple_500">
+        android:background="#052379">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,6 +16,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="60dp"
+                android:layout_gravity="left"
                 android:text="@string/score"
                 android:textColor="@color/white"
                 />
@@ -53,9 +55,10 @@
                     android:text="Right"/>
             </LinearLayout>
             <Button
+                android:id="@+id/btnFlip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Flip" />
+                android:text="Rotate" />
         </LinearLayout>
     </LinearLayout>
 </layout>

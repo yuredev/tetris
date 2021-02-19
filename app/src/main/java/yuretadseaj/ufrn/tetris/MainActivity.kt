@@ -3,22 +3,24 @@ package yuretadseaj.ufrn.tetris
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import yuretadseaj.ufrn.tetris.databinding.ActivityMainBinding
 import yuretadseaj.ufrn.tetris.pieces.Hero
 import yuretadseaj.ufrn.tetris.pieces.Piece
 import yuretadseaj.ufrn.tetris.pieces.SmashBoy
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var currentPiece: Piece
-    private val rowCount = 22
-    private val columnCount = 12
-    private var isRuning = true
+    private val rowCount = 23
+    private val columnCount = 13
+    private var isRunning = true
     private val waitingTime = 300
-    private val initialPosition = Point(1, 1)
+    private val initialPosition = Point(1, columnCount / 2 - 1)
     private val stoppedPieces = mutableListOf<Piece>()
 
     private val validPositionsBoard = Array(rowCount) {
@@ -38,6 +40,9 @@ class MainActivity : AppCompatActivity() {
         binding.gameArea.rowCount = rowCount
         binding.gameArea.columnCount = columnCount
         currentPiece = getRandomPiece()
+        if (currentPiece is SmashBoy) {
+            binding.btnFlip.visibility = View.INVISIBLE
+        }
         defineBtnActions()
         inflateGameArea()
         run()
@@ -59,6 +64,12 @@ class MainActivity : AppCompatActivity() {
                 currentPiece.moveDown()
             }
         }
+        binding.btnFlip.setOnClickListener {
+            val isValid = piecePositionIsValid(currentPiece.rotated())
+            if (isValid) {
+                currentPiece.rotate()
+            }
+        }
     }
 
     private fun inflateGameArea() {
@@ -76,16 +87,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getRandomPiece(): Piece {
-        when ((Math.random() * 2).toInt()) {
-            0 -> return SmashBoy(initialPosition)
-            1 -> return Hero(initialPosition)
+        return when (Random.nextInt(0, 1 + 1)) {
+            0 -> SmashBoy(initialPosition)
+            1 -> Hero(initialPosition)
+            else -> SmashBoy(initialPosition)
         }
-        return SmashBoy(initialPosition)
     }
 
     private fun isBorder(point: Point): Boolean {
         val (row, column) = point
         return row == 0 || column == 0 || row == rowCount - 1 || column == columnCount - 1
+    }
+
+    private fun isOutOfBounds(point: Point): Boolean {
+        val (row, column) = point
+        return row < 0 || column < 0 || row > rowCount - 1 || column > columnCount - 1
     }
 
     private fun clearScreen() {
@@ -106,31 +122,22 @@ class MainActivity : AppCompatActivity() {
             try {
                 boardView[pos.row][pos.column]!!.setImageResource(R.drawable.white_point)
             } catch (e: ArrayIndexOutOfBoundsException) {
-                isRuning = false
+                isRunning = false
             }
         }
     }
 
-    private fun positionIsBusy(point: Point): Boolean {
+    private fun isBusy(point: Point): Boolean {
         return !validPositionsBoard[point.row][point.column]
     }
 
     private fun piecePositionIsValid(piece: Piece): Boolean {
         for (point in piece.getPoints()) {
-            if (isBorder(point) || positionIsBusy(point)) {
+            if (isOutOfBounds(point) || isBorder(point) || isBusy(point)) {
                 return false
             }
         }
         return true
-    }
-
-    private fun isInBoardBottom(piece: Piece): Boolean {
-        for (point in piece.getPoints()) {
-            if (point.row == rowCount - 2) {
-                return true
-            }
-        }
-        return false
     }
 
     private fun renderStoppedPieces() {
@@ -143,7 +150,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun run() {
         Thread {
-            while (isRuning) {
+            while (isRunning) {
                 Thread.sleep(waitingTime.toLong())
                 runOnUiThread {
                     clearScreen()
@@ -157,6 +164,13 @@ class MainActivity : AppCompatActivity() {
                         validPositionsBoard[row][column] = false
                     }
                     currentPiece = getRandomPiece()
+                    runOnUiThread {
+                        if (currentPiece is SmashBoy) {
+                            binding.btnFlip.visibility = View.INVISIBLE
+                        } else {
+                            binding.btnFlip.visibility = View.VISIBLE
+                        }
+                    }
                 }
                 runOnUiThread {
                     renderPiece(currentPiece)
