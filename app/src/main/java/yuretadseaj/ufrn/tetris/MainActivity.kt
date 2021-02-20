@@ -3,26 +3,26 @@ package yuretadseaj.ufrn.tetris
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import yuretadseaj.ufrn.tetris.databinding.ActivityMainBinding
 import yuretadseaj.ufrn.tetris.pieces.Colors
 import yuretadseaj.ufrn.tetris.pieces.Hero
 import yuretadseaj.ufrn.tetris.pieces.Piece
 import yuretadseaj.ufrn.tetris.pieces.SmashBoy
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var currentPiece: Piece
-    private val rowCount = 23
-    private val columnCount = 13
+    private val rowCount = 24
+    private val columnCount = 12
+    private val waitingTime = 450
+    private val initialPosition = Point(1, columnCount / 2 - 1)
     private var isRunning = true
-    private val waitingTime = 250
-    private val initialPosition = Point(0, columnCount / 2 - 1)
-    private val stoppedPieces = mutableListOf<Piece>()
+    private var score: Long = 0
+    private var busyPoints = mutableListOf<HashMap<String, Any>>()
 
     private val validPositionsBoard = Array(rowCount) {
         Array(columnCount) {
@@ -41,9 +41,6 @@ class MainActivity : AppCompatActivity() {
         binding.gameArea.rowCount = rowCount
         binding.gameArea.columnCount = columnCount
         currentPiece = getRandomPiece()
-        if (currentPiece is SmashBoy) {
-            binding.btnFlip.visibility = View.INVISIBLE
-        }
         defineBtnActions()
         inflateGameArea()
         run()
@@ -53,22 +50,25 @@ class MainActivity : AppCompatActivity() {
         binding.btnRight.setOnClickListener {
             if (piecePositionIsValid(currentPiece.toRight())) {
                 currentPiece.moveRight()
+                refreshScreen()
             }
         }
         binding.btnLeft.setOnClickListener {
             if (piecePositionIsValid(currentPiece.toLeft())) {
                 currentPiece.moveLeft()
+                refreshScreen()
             }
         }
         binding.btnDown.setOnClickListener {
             if (piecePositionIsValid(currentPiece.toDown())) {
                 currentPiece.moveDown()
+                refreshScreen()
             }
         }
         binding.btnFlip.setOnClickListener {
-            val isValid = piecePositionIsValid(currentPiece.rotated())
-            if (isValid) {
+            if (piecePositionIsValid(currentPiece.rotated())) {
                 currentPiece.rotate()
+                refreshScreen()
             }
         }
     }
@@ -88,9 +88,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getRandomPiece(): Piece {
-        return when (Random.nextInt(0, 1 + 1)) {
-            0 -> SmashBoy(initialPosition)
-            1 -> Hero(initialPosition)
+        return when ((Math.random() * 2).toInt()) {
+            0 -> Hero(initialPosition)
+            1 -> SmashBoy(initialPosition)
             else -> SmashBoy(initialPosition)
         }
     }
@@ -119,17 +119,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun renderPiece(piece: Piece) {
-        for (pos in piece.getPoints()) {
-            try {
-                boardView[pos.row][pos.column]!!.setImageResource(getPieceColor(currentPiece))
-            } catch (e: ArrayIndexOutOfBoundsException) {
-                isRunning = false
-            }
+        for ((row, column) in piece.getPoints()) {
+            boardView[row][column]!!.setImageResource(getColorResource(piece.color))
         }
     }
 
-    private fun getPieceColor(piece: Piece): Int {
-        return when (piece.color) {
+    private fun getColorResource(color: Colors): Int {
+        return when (color) {
             Colors.WHITE -> R.drawable.white_point
             Colors.PURPLE -> R.drawable.purple_point
             Colors.GREEN -> R.drawable.green_point
@@ -138,11 +134,7 @@ class MainActivity : AppCompatActivity() {
             Colors.ORANGE -> R.drawable.orange_point
             Colors.BLUE -> R.drawable.blue_point
             Colors.RED -> R.drawable.red_point
-            else -> R.drawable.white_point
         }
-    }
-    private fun isBusy(point: Point): Boolean {
-        return !validPositionsBoard[point.row][point.column]
     }
 
     private fun piecePositionIsValid(piece: Piece): Boolean {
@@ -154,11 +146,49 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun renderStoppedPieces() {
-        for (piece in stoppedPieces) {
-            for ((row, column) in piece.getPoints()) {
-                boardView[row][column]!!.setImageResource(getPieceColor(piece))
+    private fun isBusy(point: Point): Boolean {
+        return !validPositionsBoard[point.row][point.column]
+    }
+
+    private fun renderBusyPoints() {
+        for (busyPoint in busyPoints) {
+            val pointColor = busyPoint["color"] as Colors
+            val (row, column) = busyPoint["point"] as Point
+            boardView[row][column]!!.setImageResource(getColorResource(pointColor))
+        }
+    }
+
+    private fun refreshScreen() {
+        clearScreen()
+        renderBusyPoints()
+        renderPiece(currentPiece)
+    }
+
+    private fun getScoredRows(): MutableList<Int> {
+        val rowsScored = mutableListOf<Int>()
+        for (i in 1 until rowCount - 1) {
+            var scored = true
+            for (j in 1 until columnCount - 1) {
+                if (!isBusy(Point(i, j))) {
+                    scored = false
+                    break
+                }
             }
+            if (scored) {
+                rowsScored.add(i)
+            }
+        }
+        return rowsScored
+    }
+
+    private fun destroyRow(row: Int) {
+        for (column in 1 until columnCount - 1) {
+            validPositionsBoard[row][column] = true
+            busyPoints = busyPoints.filter {
+                val point = it["point"] as Point
+                point.row != row
+            }.toMutableList()
+            refreshScreen()
         }
     }
 
@@ -167,27 +197,35 @@ class MainActivity : AppCompatActivity() {
             while (isRunning) {
                 Thread.sleep(waitingTime.toLong())
                 runOnUiThread {
-                    clearScreen()
-                    renderStoppedPieces()
+                    refreshScreen()
                 }
                 if (piecePositionIsValid(currentPiece.toDown())) {
                     currentPiece.moveDown()
                 } else {
-                    stoppedPieces.add(currentPiece)
+                    val currentPiecePointsInfo = currentPiece.getPoints().map {
+                        hashMapOf("point" to it, "color" to currentPiece.color)
+                    }
+                    busyPoints.addAll(currentPiecePointsInfo)
                     currentPiece.getPoints().forEach {(row, column) ->
                         validPositionsBoard[row][column] = false
                     }
-                    currentPiece = getRandomPiece()
+                    val scoredRows = getScoredRows()
+                    score = (scoredRows.size * 100).toLong()
                     runOnUiThread {
-                        if (currentPiece is SmashBoy) {
-                            binding.btnFlip.visibility = View.INVISIBLE
-                        } else {
-                            binding.btnFlip.visibility = View.VISIBLE
+                        scoredRows.forEach {
+                            destroyRow(it)
                         }
                     }
-                }
-                runOnUiThread {
-                    renderPiece(currentPiece)
+                    val nextPiece = getRandomPiece()
+                    if (piecePositionIsValid(nextPiece)) {
+                        currentPiece = nextPiece
+                    } else {
+                        isRunning = false
+                        runOnUiThread {
+                            Toast.makeText(this, "Game Over", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    currentPiece = getRandomPiece()
                 }
             }
         }.start()

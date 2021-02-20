@@ -8,6 +8,9 @@ class Hero(initialPosition: Point) : Piece(
         Point(initialPosition.row, initialPosition.column + 1),
         Point(initialPosition.row, initialPosition.column + 2)
 ) {
+
+    constructor(hero: Hero) : this(hero.pointB)
+
     override fun rotate(): Hero {
         if (isInHorizontal()) {
             pointD.column = pointC.column
@@ -32,11 +35,7 @@ class Hero(initialPosition: Point) : Piece(
     }
 
     override fun rotated(): Hero {
-        val heroCopy = Hero(Point(1,1))
-        heroCopy.pointA = Point(pointA)
-        heroCopy.pointB = Point(pointB)
-        heroCopy.pointC = Point(pointC)
-        heroCopy.pointD = Point(pointD)
+        val heroCopy = Hero(this)
         return heroCopy.rotate()
     }
 }
