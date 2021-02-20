@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import yuretadseaj.ufrn.tetris.databinding.ActivityMainBinding
+import yuretadseaj.ufrn.tetris.pieces.Colors
 import yuretadseaj.ufrn.tetris.pieces.Hero
 import yuretadseaj.ufrn.tetris.pieces.Piece
 import yuretadseaj.ufrn.tetris.pieces.SmashBoy
@@ -19,8 +20,8 @@ class MainActivity : AppCompatActivity() {
     private val rowCount = 23
     private val columnCount = 13
     private var isRunning = true
-    private val waitingTime = 300
-    private val initialPosition = Point(1, columnCount / 2 - 1)
+    private val waitingTime = 250
+    private val initialPosition = Point(0, columnCount / 2 - 1)
     private val stoppedPieces = mutableListOf<Piece>()
 
     private val validPositionsBoard = Array(rowCount) {
@@ -120,13 +121,26 @@ class MainActivity : AppCompatActivity() {
     private fun renderPiece(piece: Piece) {
         for (pos in piece.getPoints()) {
             try {
-                boardView[pos.row][pos.column]!!.setImageResource(R.drawable.white_point)
+                boardView[pos.row][pos.column]!!.setImageResource(getPieceColor(currentPiece))
             } catch (e: ArrayIndexOutOfBoundsException) {
                 isRunning = false
             }
         }
     }
 
+    private fun getPieceColor(piece: Piece): Int {
+        return when (piece.color) {
+            Colors.WHITE -> R.drawable.white_point
+            Colors.PURPLE -> R.drawable.purple_point
+            Colors.GREEN -> R.drawable.green_point
+            Colors.CYAN -> R.drawable.cyan_point
+            Colors.YELLOW -> R.drawable.yellow_point
+            Colors.ORANGE -> R.drawable.orange_point
+            Colors.BLUE -> R.drawable.blue_point
+            Colors.RED -> R.drawable.red_point
+            else -> R.drawable.white_point
+        }
+    }
     private fun isBusy(point: Point): Boolean {
         return !validPositionsBoard[point.row][point.column]
     }
@@ -143,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     private fun renderStoppedPieces() {
         for (piece in stoppedPieces) {
             for ((row, column) in piece.getPoints()) {
-                boardView[row][column]!!.setImageResource(R.drawable.white_point)
+                boardView[row][column]!!.setImageResource(getPieceColor(piece))
             }
         }
     }

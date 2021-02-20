@@ -2,12 +2,35 @@ package yuretadseaj.ufrn.tetris.pieces
 
 import yuretadseaj.ufrn.tetris.Point
 
+enum class Colors{
+    WHITE,
+    GREEN,
+    PURPLE,
+    YELLOW,
+    CYAN,
+    ORANGE,
+    RED,
+    BLUE
+}
+
 open class Piece(
         var pointA: Point,
         var pointB: Point,
         var pointC: Point,
         var pointD: Point
 ) {
+    val color = when ((Math.random() * 8).toInt()) {
+        0 -> Colors.CYAN
+        1 -> Colors.GREEN
+        2 -> Colors.PURPLE
+        3 -> Colors.YELLOW
+        4 -> Colors.WHITE
+        5 -> Colors.ORANGE
+        6 -> Colors.BLUE
+        7 -> Colors.RED
+        else -> Colors.WHITE
+    }
+
     fun moveRight(): Piece {
         pointA.moveRight()
         pointB.moveRight()
