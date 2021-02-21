@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currentPiece: Piece
     private val rowCount = 24
     private val columnCount = 12
-    private val waitingTime = 450
+    private val waitingTime = 300
     private val initialPosition = Point(1, columnCount / 2 - 1)
     private var isRunning = true
     private var score: Long = 0
@@ -188,8 +188,20 @@ class MainActivity : AppCompatActivity() {
                 val point = it["point"] as Point
                 point.row != row
             }.toMutableList()
-            refreshScreen()
         }
+        busyPoints = busyPoints.map {
+            var result = it
+            val point = it["point"] as Point
+            if (point.row < row) {
+                val color = it["color"] as Colors
+                validPositionsBoard[point.row][point.column] = true
+                point.moveDown()
+                validPositionsBoard[point.row][point.column] = false
+                result = hashMapOf("point" to point, "color" to color)
+            }
+            result
+        }.toMutableList()
+        refreshScreen()
     }
 
     private fun run() {
@@ -212,6 +224,7 @@ class MainActivity : AppCompatActivity() {
                     val scoredRows = getScoredRows()
                     score = (scoredRows.size * 100).toLong()
                     runOnUiThread {
+                        scoredRows.sort()
                         scoredRows.forEach {
                             destroyRow(it)
                         }
@@ -225,7 +238,6 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this, "Game Over", Toast.LENGTH_LONG).show()
                         }
                     }
-                    currentPiece = getRandomPiece()
                 }
             }
         }.start()

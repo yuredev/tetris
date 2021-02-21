@@ -18,4 +18,5 @@ data class Point(var row: Int, var column: Int) {
         column--
         return this
     }
+
 }
