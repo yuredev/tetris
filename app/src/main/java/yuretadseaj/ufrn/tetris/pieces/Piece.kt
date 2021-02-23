@@ -19,7 +19,7 @@ open class Piece(
         var pointC: Point,
         var pointD: Point
 ) {
-    val color = when ((Math.random() * 8).toInt()) {
+    var color = when ((Math.random() * 8).toInt()) {
         0 -> Colors.CYAN
         1 -> Colors.GREEN
         2 -> Colors.PURPLE

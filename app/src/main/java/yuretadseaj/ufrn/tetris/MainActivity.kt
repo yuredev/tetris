@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.btnFlip.setOnClickListener {
             if (piecePositionIsValid(currentPiece.rotated())) {
-                currentPiece.rotate()
+                currentPiece = currentPiece.rotated()
                 refreshScreen()
             }
         }

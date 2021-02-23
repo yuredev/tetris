@@ -36,6 +36,13 @@ class Hero(initialPosition: Point) : Piece(
 
     override fun rotated(): Hero {
         val heroCopy = Hero(this)
-        return heroCopy.rotate()
+        heroCopy.color = this.color
+        if (isInHorizontal()) {
+            heroCopy.rotate()
+        } else {
+            heroCopy.rotate().rotate()
+            heroCopy.moveLeft()
+        }
+        return heroCopy
     }
 }
