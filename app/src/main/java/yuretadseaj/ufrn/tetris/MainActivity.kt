@@ -1,5 +1,6 @@
 package yuretadseaj.ufrn.tetris
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,9 +17,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var currentPiece: Piece
+    private var waitingTime: Int = 400
     private val rowCount = 24
     private val columnCount = 12
-    private val waitingTime = 300
     private val initialPosition = Point(1, columnCount / 2 - 1)
     private var isRunning = true
     private var score: Long = 0
@@ -41,9 +42,19 @@ class MainActivity : AppCompatActivity() {
         binding.gameArea.rowCount = rowCount
         binding.gameArea.columnCount = columnCount
         currentPiece = getRandomPiece()
+        waitingTime = getWaitingTimeByDifficulty()
         defineBtnActions()
         inflateGameArea()
         run()
+    }
+
+    private fun getWaitingTimeByDifficulty(): Int {
+        return when(getSharedPreferences("${R.string.app_name}_settings", Context.MODE_PRIVATE).getString("difficulty", "")) {
+            "easy" -> 400
+            "medium" -> 200
+            "hard" -> 100
+            else -> 400
+        }
     }
 
     private fun defineBtnActions() {
@@ -234,9 +245,6 @@ class MainActivity : AppCompatActivity() {
                         currentPiece = nextPiece
                     } else {
                         isRunning = false
-                        runOnUiThread {
-                            Toast.makeText(this, "Game Over", Toast.LENGTH_LONG).show()
-                        }
                     }
                 }
             }

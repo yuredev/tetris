@@ -16,19 +16,18 @@ class MainMenu : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_menu)
 
         val gameScreenIntent = Intent(this, MainActivity::class.java)
+        val settingsScreenIntent = Intent(this, Settings::class.java)
 
         binding.apply {
             btnContinue.setOnClickListener {
                 startActivity(gameScreenIntent)
             }
             btnNewGame.setOnClickListener {
-
+                startActivity(gameScreenIntent)
             }
             btnSettings.setOnClickListener {
-
+                startActivity(settingsScreenIntent)
             }
         }
-
-//        setContentView(R.layout.activity_main_menu)
     }
 }

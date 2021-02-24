@@ -1,24 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Settings">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40sp"
-        android:text="Settings"
-        />
-    <LinearLayout
+
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        tools:context=".Settings"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Difficulty"
+            android:textSize="40sp"
+            android:text="Settings"
             />
-<!--        radios -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Difficulty: "
+                />
 
+            <RadioGroup
+                android:id="@+id/radioGroupDifficulty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/radioButtonEasy"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Easy" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonMedium"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Medium" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonHard"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Hard" />
+            </RadioGroup>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pieces Variation: "
+                />
+            <EditText
+                android:id="@+id/editTextPiecesVariation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="min 1: max: 8"
+                android:inputType="number"
+                />
+            <Button
+                android:id="@+id/btnSavePiecesVariation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="Save"
+                android:textColor="@color/purple_500"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</layout>
+
