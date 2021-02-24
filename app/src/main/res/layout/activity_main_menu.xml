@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainMenu"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="30dp"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/tetris_logo"
+            android:contentDescription="Game logo" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="By @yuredev"
+            android:layout_gravity="right"
+            android:layout_marginRight="30dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <Button
+                android:id="@+id/btnContinue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="Continue"
+                android:textSize="30sp"
+                android:textColor="#AA0000"
+                />
+            <Button
+                android:id="@+id/btnNewGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="New Game"
+                android:textSize="30sp"
+                android:textColor="#AA0000"
+                />
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="Settings"
+                android:textSize="30sp"
+                android:textColor="#AA0000"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>
+
+
+
