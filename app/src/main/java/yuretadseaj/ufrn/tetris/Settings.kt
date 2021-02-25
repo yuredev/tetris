@@ -18,7 +18,7 @@ class Settings : AppCompatActivity() {
 
         val settings = getSharedPreferences("${R.string.app_name}_settings", Context.MODE_PRIVATE)
         val settingsEditor = settings.edit()
-        val currentDifficulty = settings.getString("difficulty", "")
+        val currentDifficulty = settings.getString("difficulty", "medium")
         val currentPiecesVariation = settings.getInt("pieces_variation", 8)
 
         binding.apply {

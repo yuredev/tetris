@@ -8,6 +8,7 @@
         tools:context=".MainMenu"
         android:orientation="vertical"
         android:gravity="center"
+        android:background="@drawable/bricks_background"
         android:padding="30dp"
         >
 

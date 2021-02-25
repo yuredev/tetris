@@ -1,6 +1,6 @@
-package yuretadseaj.ufrn.tetris.pieces
+package yuretadseaj.ufrn.tetris.models.pieces
 
-import yuretadseaj.ufrn.tetris.Point
+import yuretadseaj.ufrn.tetris.models.Point
 
 enum class Colors{
     WHITE,
@@ -14,10 +14,10 @@ enum class Colors{
 }
 
 open class Piece(
-        var pointA: Point,
-        var pointB: Point,
-        var pointC: Point,
-        var pointD: Point
+    var pointA: Point,
+    var pointB: Point,
+    var pointC: Point,
+    var pointD: Point
 ) {
     var color = when ((Math.random() * 8).toInt()) {
         0 -> Colors.CYAN
@@ -56,32 +56,37 @@ open class Piece(
     }
 
     fun toLeft() = Piece(
-            Point(pointA),
-            Point(pointB),
-            Point(pointC),
-            Point(pointD)
+        Point(pointA),
+        Point(pointB),
+        Point(pointC),
+        Point(pointD)
     ).moveLeft()
 
     fun toDown() = Piece(
-            Point(pointA),
-            Point(pointB),
-            Point(pointC),
-            Point(pointD)
+        Point(pointA),
+        Point(pointB),
+        Point(pointC),
+        Point(pointD)
     ).moveDown()
 
     fun toRight() = Piece(
+        Point(pointA),
+        Point(pointB),
+        Point(pointC),
+        Point(pointD)
+    ).moveRight()
+
+    open fun rotate(): Piece {
+        return this
+    }
+
+    open fun rotated(): Piece {
+        return Piece(
             Point(pointA),
             Point(pointB),
             Point(pointC),
             Point(pointD)
-    ).moveRight()
-
-    open fun rotated(): Piece {
-        return this
-    }
-
-    open fun rotate(): Piece {
-        return this
+        )
     }
 
     fun getPoints(): Array<Point> {

@@ -1,15 +1,20 @@
-package yuretadseaj.ufrn.tetris.pieces
+package yuretadseaj.ufrn.tetris.models.pieces
 
-import yuretadseaj.ufrn.tetris.Point
+import yuretadseaj.ufrn.tetris.models.Point
 
-class Hero(initialPosition: Point) : Piece(
+class Hero : Piece {
+    constructor(initialPosition: Point): super(
         Point(initialPosition.row, initialPosition.column - 1),
         Point(initialPosition.row, initialPosition.column),
         Point(initialPosition.row, initialPosition.column + 1),
         Point(initialPosition.row, initialPosition.column + 2)
-) {
-
-    constructor(hero: Hero) : this(hero.pointB)
+    )
+    constructor(
+        pointA: Point,
+        pointB: Point,
+        pointC: Point,
+        pointD: Point
+    ): super(pointA, pointB, pointC, pointD)
 
     override fun rotate(): Hero {
         if (isInHorizontal()) {
@@ -30,19 +35,18 @@ class Hero(initialPosition: Point) : Piece(
         return this
     }
 
-    private fun isInHorizontal(): Boolean {
-        return (pointA.row == pointB.row && pointB.row == pointC.row && pointC.row == pointD.row)
+    override fun rotated(): Piece {
+        val pieceCopy = Hero(
+            Point(pointA),
+            Point(pointB),
+            Point(pointC),
+            Point(pointD)
+        )
+        pieceCopy.color = color
+        return pieceCopy.rotate()
     }
 
-    override fun rotated(): Hero {
-        val heroCopy = Hero(this)
-        heroCopy.color = this.color
-        if (isInHorizontal()) {
-            heroCopy.rotate()
-        } else {
-            heroCopy.rotate().rotate()
-            heroCopy.moveLeft()
-        }
-        return heroCopy
+    private fun isInHorizontal(): Boolean {
+        return (pointA.row == pointB.row && pointB.row == pointC.row && pointC.row == pointD.row)
     }
 }

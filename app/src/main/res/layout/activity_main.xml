@@ -8,7 +8,7 @@
         android:gravity="clip_vertical"
         android:orientation="vertical"
         tools:context=".MainActivity"
-        android:background="#052379">
+        android:background="@drawable/bricks_background">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

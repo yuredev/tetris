@@ -5,13 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import yuretadseaj.ufrn.tetris.databinding.ActivityMainBinding
-import yuretadseaj.ufrn.tetris.pieces.Colors
-import yuretadseaj.ufrn.tetris.pieces.Hero
-import yuretadseaj.ufrn.tetris.pieces.Piece
-import yuretadseaj.ufrn.tetris.pieces.SmashBoy
+import yuretadseaj.ufrn.tetris.models.Point
+import yuretadseaj.ufrn.tetris.models.pieces.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -78,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.btnFlip.setOnClickListener {
             if (piecePositionIsValid(currentPiece.rotated())) {
-                currentPiece = currentPiece.rotated()
+                currentPiece.rotate()
                 refreshScreen()
             }
         }
@@ -99,9 +96,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getRandomPiece(): Piece {
-        return when ((Math.random() * 2).toInt()) {
+        return when ((Math.random() * 3).toInt()) {
             0 -> Hero(initialPosition)
             1 -> SmashBoy(initialPosition)
+            2 -> BlueRicky(initialPosition)
             else -> SmashBoy(initialPosition)
         }
     }
