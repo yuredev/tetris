@@ -19,9 +19,6 @@ class MainMenu : AppCompatActivity() {
         val settingsScreenIntent = Intent(this, Settings::class.java)
 
         binding.apply {
-            btnContinue.setOnClickListener {
-                startActivity(gameScreenIntent)
-            }
             btnNewGame.setOnClickListener {
                 startActivity(gameScreenIntent)
             }

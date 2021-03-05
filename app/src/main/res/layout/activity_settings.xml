@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="40sp"
-            android:text="Settings"
+            android:text="@string/settings"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Difficulty: "
+                android:text="@string/difficulty"
                 />
 
             <RadioGroup
@@ -34,19 +34,19 @@
                     android:id="@+id/radioButtonEasy"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Easy" />
+                    android:text="@string/easy" />
 
                 <RadioButton
                     android:id="@+id/radioButtonMedium"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Medium" />
+                    android:text="@string/medium" />
 
                 <RadioButton
                     android:id="@+id/radioButtonHard"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Hard" />
+                    android:text="@string/hard" />
             </RadioGroup>
         </LinearLayout>
         <LinearLayout
@@ -55,13 +55,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pieces Variation: "
+                android:text="@string/pieces_variation"
                 />
             <EditText
                 android:id="@+id/editTextPiecesVariation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="min 1: max: 8"
+                android:hint="@string/min_1_max_8"
                 android:inputType="number"
                 />
             <Button
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/borderlessButtonStyle"
-                android:text="Save"
+                android:text="@string/save"
                 android:textColor="@color/purple_500"/>
         </LinearLayout>
     </LinearLayout>

@@ -1,4 +1,24 @@
 <resources>
     <string name="app_name">Tetris</string>
-    <string name="score">Score</string>
+    <string name="score_title">Score</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="down">Down</string>
+    <string name="rotate">Rotate</string>
+    <string name="_0" translatable="false">0</string>
+    <string name="game_logo">Game logo</string>
+    <string name="play_game">Play Game</string>
+    <string name="settings">Settings</string>
+    <string name="difficulty">Difficulty:</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard" translatable="false">Hard</string>
+    <string name="pieces_variation">Pieces Variation:</string>
+    <string name="min_1_max_8" translatable="false">min 1: max: 8</string>
+    <string name="save">Save</string>
+    <string name="game_over">Game Over</string>
+    <string name="score_message">Your Score:</string>
+    <string name="highest_scores">Highest Scores</string>
+    <string name="restart">Restart</string>
+    <string name="record_message">You Beated the Highest Score</string>
 </resources>

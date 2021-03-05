@@ -1,6 +1,7 @@
 package yuretadseaj.ufrn.tetris
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,11 +47,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getWaitingTimeByDifficulty(): Int {
-        return when(getSharedPreferences("${R.string.app_name}_settings", Context.MODE_PRIVATE).getString("difficulty", "")) {
-            "easy" -> 400
-            "medium" -> 200
-            "hard" -> 100
-            else -> 400
+        val difficulty = getSharedPreferences("${R.string.app_name}_settings", Context.MODE_PRIVATE)
+            .getString("difficulty", "")
+        return when(difficulty) {
+            "easy" -> 325
+            "medium" -> 225
+            "hard" -> 125
+            else -> 200
         }
     }
 
@@ -231,8 +234,11 @@ class MainActivity : AppCompatActivity() {
                         validPositionsBoard[row][column] = false
                     }
                     val scoredRows = getScoredRows()
-                    score = (scoredRows.size * 100).toLong()
                     runOnUiThread {
+                        if (scoredRows.size > 0) {
+                            score += (scoredRows.size * 100).toLong()
+                            binding.scoreValue.text = score.toString()
+                        }
                         scoredRows.sort()
                         scoredRows.forEach {
                             destroyRow(it)
@@ -242,7 +248,32 @@ class MainActivity : AppCompatActivity() {
                     if (piecePositionIsValid(nextPiece)) {
                         currentPiece = nextPiece
                     } else {
+                        val settings = getSharedPreferences("${R.string.app_name}_settings", Context.MODE_PRIVATE)
+                        val highestScore = settings.getLong("highest_score", 0)
+                        val settingsEditor = settings.edit()
+                        val secondHighest =  settings.getLong("second_highest_score", 0)
+                        val thirdHighest =  settings.getLong("third_highest_score", 0)
+                        val recordWasBeated = score > highestScore
+                        when {
+                            score > highestScore -> {
+                                settingsEditor.putLong("highest_score", score).apply()
+                                settingsEditor.putLong("second_highest", highestScore).apply()
+                                settingsEditor.putLong("third_highest", secondHighest).apply()
+                            }
+                            score > secondHighest -> {
+                                settingsEditor.putLong("second_highest", score).apply()
+                                settingsEditor.putLong("third_highest", secondHighest).apply()
+                            }
+                            score > thirdHighest -> {
+                                settingsEditor.putLong("third_highest", score).apply()
+                            }
+                        }
                         isRunning = false
+                        val resultIntent = Intent(this, ResultActivity::class.java)
+                        resultIntent.putExtra("score", score)
+                        resultIntent.putExtra("record_was_beated", recordWasBeated)
+                        startActivity(resultIntent)
+                        finish()
                     }
                 }
             }
